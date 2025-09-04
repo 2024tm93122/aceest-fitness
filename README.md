@@ -59,7 +59,7 @@ git init
 git add .
 git commit -m "feat: initial Flask app, tests, Dockerfile, CI"
 git branch -M main
-git remote add origin https://github.com/<your-username>/<your-repo>.git
+git remote add origin https://github.com/2024tm93122/aceest-fitness.git
 git push -u origin main
 ```
 
@@ -72,3 +72,4 @@ Pushes to GitHub will trigger the **CI workflow**:
 
 - The original provided Tkinter script was translated into HTTP endpoints so the app can be tested and containerized easily.
 - The in-memory workout store resets on each restart; persistence is out of scope for this assignment but can be added later.
+- Added conftest.py to resolve the module not found error which was failing the GitHub Work Action.
