@@ -6,7 +6,6 @@ def create_app(test_config: dict | None = None):
     if test_config:
         app.config.update(test_config)
 
-    # Simple in-memory store (resets on restart). For the assignment this is fine.
     app.workouts = []
 
     @app.get("/")
@@ -46,8 +45,6 @@ def create_app(test_config: dict | None = None):
 
     return app
 
-# Enable 'python -m app.app' and 'python app/app.py' for local runs
 if __name__ == "__main__":
     application = create_app()
-    # Use port 8000 to align with Docker/GitHub Actions checks
     application.run(host="0.0.0.0", port=8000)
