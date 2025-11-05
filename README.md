@@ -2,7 +2,7 @@
 
 # A minimal Flask API that models basic workout logging for **ACEest_Fitness and Gym**, packaged with unit tests, Dockerfile, and a GitHub Actions CI pipeline.
 
-## Project layout
+## Project Layout
 
 ```text
 .
@@ -18,7 +18,7 @@
 └── README.md
 ```
 
-## 1) Run locally (no Docker)
+## 1) Run Locally (No Docker)
 
 **Prereqs:** Python 3.11+
 
@@ -52,7 +52,7 @@ docker build -t aceest-fitness:local .
 docker run -p 8000:8000 aceest-fitness:local
 ```
 
-## 3) Git & GitHub (suggested workflow)
+## 3) Git & GitHub (Suggested Workflow)
 
 ```bash
 git init
