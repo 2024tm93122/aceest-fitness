@@ -1,5 +1,5 @@
+
 from flask import Flask, request, jsonify, render_template
-#from flask import Flask, request, jsonify
 
 def create_app(test_config: dict | None = None):
     app = Flask(__name__)
@@ -42,6 +42,9 @@ def create_app(test_config: dict | None = None):
     @app.get("/workouts")
     def list_workouts():
         return jsonify(workouts=app.workouts, count=len(app.workouts)), 200
+    @app.get("/ui")
+    def ui():
+        return render_template("index.html")
 
     return app
 
