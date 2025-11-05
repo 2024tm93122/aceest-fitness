@@ -8,11 +8,15 @@
 .
 ├── app/
 │   ├── __init__.py
-│   └── app.py            # Flask app (app factory: create_app())
+│   ├── app.py            # Flask app (app factory: create_app())
+│   └── templates/        # HTML templates
+│       └── index.html    # Web UI interface
 ├── tests/
+│   ├── conftest.py       # Test configuration
 │   └── test_app.py       # Pytest unit tests
 ├── .github/workflows/
-│   └── ci.yml            # GitHub Actions pipeline
+│   └── CI.yml            # GitHub Actions pipeline
+├── ACEest_Fitness.py     # Original Tkinter app
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
@@ -67,6 +71,19 @@ Pushes to GitHub will trigger the **CI workflow**:
 
 - Install deps and run **pytest**
 - Build Docker image and run a **smoke test** (health check + sample API calls)
+
+## 4) Web UI
+
+After starting the app, visit the web interface:
+```bash
+# Open in browser
+http://localhost:8000/ui
+```
+
+The UI provides:
+- Dashboard with workout stats
+- Form to add new workouts
+- List of all logged workouts
 
 ## Notes
 
