@@ -1,16 +1,17 @@
-
 from flask import Flask, request, jsonify, render_template
+from datetime import datetime
 
 def create_app(test_config: dict | None = None):
     app = Flask(__name__)
     if test_config:
         app.config.update(test_config)
 
-    app.workouts = []
+    # Updated: Initialize with categories
+    app.workouts = {"Warm-up": [], "Workout": [], "Cool-down": []}
 
     @app.get("/")
     def index():
-        return jsonify(message="ACEestFitness API is running", docs=["/health", "/workouts"]), 200
+        return jsonify(message="ACEestFitness API is running", docs=["/health", "/workouts", "/summary"]), 200
 
     @app.get("/health")
     def health():
@@ -22,8 +23,12 @@ def create_app(test_config: dict | None = None):
             return jsonify(error="Expected application/json"), 415
 
         data = request.get_json(silent=True) or {}
+        category = data.get("category", "Workout")  # Default to "Workout"
         workout = (data.get("workout") or "").strip()
         duration = data.get("duration")
+
+        if category not in app.workouts:
+            return jsonify(error="Invalid category. Must be: Warm-up, Workout, or Cool-down"), 400
 
         if not workout:
             return jsonify(error="Field 'workout' is required"), 400
@@ -35,13 +40,42 @@ def create_app(test_config: dict | None = None):
         except Exception:
             return jsonify(error="Field 'duration' must be a positive integer (minutes)"), 400
 
-        entry = {"workout": workout, "duration": duration}
-        app.workouts.append(entry)
-        return jsonify(message="Workout added", entry=entry), 201
+        entry = {
+            "exercise": workout,
+            "duration": duration,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        app.workouts[category].append(entry)
+        return jsonify(message="Workout added", entry=entry, category=category), 201
 
     @app.get("/workouts")
     def list_workouts():
-        return jsonify(workouts=app.workouts, count=len(app.workouts)), 200
+        all_workouts = []
+        for category, sessions in app.workouts.items():
+            for session in sessions:
+                all_workouts.append({**session, "category": category})
+        return jsonify(workouts=all_workouts, count=len(all_workouts), by_category=app.workouts), 200
+
+    @app.get("/summary")
+    def get_summary():
+        total_time = sum(
+            session['duration'] 
+            for sessions in app.workouts.values() 
+            for session in sessions
+        )
+        
+        if total_time < 30:
+            motivation = "Good start! Keep moving 💪"
+        elif total_time < 60:
+            motivation = "Nice effort! You're building consistency 🔥"
+        else:
+            motivation = "Excellent dedication! Keep up the great work 🏆"
+        
+        return jsonify(
+            by_category=app.workouts,
+            total_time=total_time,
+            motivation=motivation
+        ), 200
         
     @app.get("/ui")
     def ui():
