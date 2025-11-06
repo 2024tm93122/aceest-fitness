@@ -37,10 +37,12 @@ python -m app.app
 
 **Try it:**
 
+**Try it:**
 ```bash
 curl http://localhost:8000/health
-curl -X POST http://localhost:8000/workouts -H "Content-Type: application/json" -d '{"workout":"Running","duration":30}'
+curl -X POST http://localhost:8000/workouts -H "Content-Type: application/json" -d '{"category":"Workout","workout":"Running","duration":30}'
 curl http://localhost:8000/workouts
+curl http://localhost:8000/summary
 ```
 
 **Run unit tests:**
