@@ -19,6 +19,7 @@
         }
 
         .container {
+            max-width: 1000px;
             max-width: 900px;
             margin: 0 auto;
             background: white;
@@ -45,6 +46,11 @@
             font-size: 1em;
         }
 
+        .tabs {
+            display: flex;
+            background: #f8f8f8;
+            border-bottom: 2px solid #ddd;
+            overflow-x: auto;
         .content {
             padding: 30px;
         }
@@ -89,12 +95,11 @@
             border-color: #000;
         }
 
-        button {
-            background: #000;
-            color: white;
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
             border: none;
-            padding: 12px 30px;
-            border-radius: 4px;
+            background: transparent;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
