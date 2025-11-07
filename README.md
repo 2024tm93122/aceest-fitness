@@ -312,7 +312,3 @@ This is an academic project for the DevOps course. For any questions or suggesti
 This project is created for educational purposes as part of the BITS Pilani DevOps course.
 
 ---
-
-**Project Status:** Active Development  
-**Current Version:** V1.2.1 (API), V1.3 (Tkinter)  
-**Last Updated:** November 2024
