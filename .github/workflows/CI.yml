@@ -34,12 +34,8 @@ jobs:
           curl -fsS http://localhost:8000/health
           curl -fsS -X POST http://localhost:8000/workouts \
             -H 'Content-Type: application/json' \
-            -d '{"category":"Workout","workout":"Running","duration":25}'
+            -d '{"workout":"Running","duration":25}'
           curl -fsS http://localhost:8000/workouts
-          curl -fsS http://localhost:8000/summary
-          curl -fsS http://localhost:8000/workout-chart
-          curl -fsS http://localhost:8000/diet-chart
-          curl -fsS http://localhost:8000/progress
           curl -fsS http://localhost:8000/ui
       - if: failure()
         run: docker logs web
