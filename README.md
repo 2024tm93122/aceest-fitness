@@ -61,8 +61,6 @@ python -m app.app
 ```
 
 **Try it:**
-
-**Try it:**
 ```bash
 # Health check
 curl http://localhost:8000/health
