@@ -17,17 +17,13 @@ A comprehensive Flask API that models workout logging, diet planning, and progre
 │   └── CI.yml            # GitHub Actions pipeline
 ├── ACEest_Fitness.py     # Original Tkinter app (V1.0)
 ├── ACEest_Fitness-V1.1.py # Enhanced version with categories
-├── ACEest_Fitness-V1.2.py # Tabbed interface with 3 tabs (Workout Chart, Diet Chart)
-├── ACEest_Fitness-V1.2.1.py # Advanced version with 4 tabs (adds Progress Tracker)
-├── ACEest_Fitness-V1.2.2.py # Improved UI styling and enhanced user experience
-├── ACEest_Fitness-V1.2.3.py # Professional color palette and modern design
-├── ACEest_Fitness-V1.3.py # Complete version with PDF reports, BMI/BMR tracking
+├── ACEest_Fitness-V1.2.1.py # Advanced version with tabs, charts, diet
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
 ```
 
-## Features (V1.2.1+)
+## Features (V1.2.1)
 
 - ✅ **Workout Logging** - Track exercises with categories (Warm-up, Workout, Cool-down)
 - ✅ **Workout Chart** - Personalized exercise recommendations
@@ -135,46 +131,18 @@ The UI provides:
 
 ## Version History
 
-| Version | Features | Description |
-|---------|----------|-------------|
-| **V1.0** | Basic workout logging (Tkinter) | Simple desktop GUI with add/view workouts functionality |
-| **V1.1** | Added categories, timestamps, motivation | Workout categories (Warm-up, Workout, Cool-down) with time tracking |
-| **V1.2** | Tabbed interface with 3 tabs | Added Workout Chart and Diet Chart tabs (no progress tracker) |
-| **V1.2.1** | Added 4th tab: Progress Tracker | Complete tabbed UI with visual charts using matplotlib |
-| **V1.2.2** | Enhanced UI styling | Improved theme, better UX, modern styling |
-| **V1.2.3** | Professional color palette | Clean design with consistent color scheme |
-| **V1.3** | PDF reports & health metrics | User info, BMI/BMR calculation, calorie tracking, PDF export |
-
-## Version Details
-
-### **V1.2 - Tabbed Interface Introduction**
-- **Added Features:**
-  - Tabbed notebook interface using ttk.Notebook
-  - Workout Chart tab with exercise recommendations
-  - Diet Chart tab with goal-based meal plans
-  - Three main tabs: Log Workouts, Workout Chart, Diet Chart
-- **Key Differences from V1.1:**
-  - Moved from single window to multi-tab interface
-  - Added static workout and diet recommendations
-  - Improved organization and user navigation
-- **Note:** V1.2 does NOT include the Progress Tracker tab (that's V1.2.1+)
-
-### **V1.2.1 - Progress Visualization**
-- **Added Features:**
-  - 4th tab: Progress Tracker with matplotlib charts
-  - Bar chart showing time spent per category
-  - Pie chart showing workout distribution
-  - Dynamic chart updates after adding workouts
-- **Dependencies:** Requires matplotlib for chart rendering
+| Version | Features |
+|---------|----------|
+| **V1.0** | Basic workout logging (Tkinter) |
+| **V1.1** | Added categories, timestamps, motivation |
+| **V1.2.1** | Added tabbed UI, workout charts, diet plans, progress tracker |
 
 ## Notes
 
 - The original provided Tkinter script was translated into HTTP endpoints so the app can be tested and containerized easily.
 - The in-memory workout store resets on each restart; persistence is out of scope for this assignment but can be added later.
 - Added conftest.py to resolve the module not found error which was failing the GitHub Work Action.
-- V1.2 introduces tabbed interface with workout and diet recommendations (3 tabs).
-- V1.2.1 extends V1.2 by adding visual progress tracking (4 tabs with matplotlib charts).
-- All Tkinter versions are preserved to demonstrate incremental feature development.
+- V1.2.1 introduces advanced features including workout recommendations, diet planning, and visual progress tracking.
 
 ## Assignment Context
 
@@ -184,4 +152,4 @@ This project is part of the **Introduction to DevOps (CSIZG514/SEZG514)** course
 - Automated testing with Pytest
 - RESTful API design
 - Version control with Git/GitHub
-- Progressive feature development across multiple versions
+- Progressive feature development
