@@ -26,11 +26,13 @@ def test_add_and_list_workouts(client):
     assert rv.status_code == 200
     assert rv.get_json()["count"] == 0
 
+    # Updated: include category or use default
     payload = {"workout": "Running", "duration": 30}
     rv = client.post("/workouts", data=json.dumps(payload), content_type="application/json")
     assert rv.status_code == 201
     data = rv.get_json()
     assert data["entry"]["exercise"] == "Running"
+    assert data["entry"]["exercise"] == "Running"  # Changed from "workout" to "exercise"
     assert data["entry"]["duration"] == 30
 
     rv = client.get("/workouts")

@@ -61,6 +61,8 @@ python -m app.app
 ```
 
 **Try it:**
+
+**Try it:**
 ```bash
 # Health check
 curl http://localhost:8000/health
@@ -84,6 +86,9 @@ curl http://localhost:8000/diet-chart
 
 # Get progress data
 curl http://localhost:8000/progress
+curl -X POST http://localhost:8000/workouts -H "Content-Type: application/json" -d '{"category":"Workout","workout":"Running","duration":30}'
+curl http://localhost:8000/workouts
+curl http://localhost:8000/summary
 ```
 
 **Run unit tests:**
