@@ -19,7 +19,8 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -45,6 +46,11 @@
             font-size: 1em;
         }
 
+        .tabs {
+            display: flex;
+            background: #f8f8f8;
+            border-bottom: 2px solid #ddd;
+            overflow-x: auto;
         .content {
             padding: 30px;
         }
@@ -76,7 +82,7 @@
             font-weight: 600;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -84,20 +90,20 @@
             font-size: 16px;
         }
 
-        input:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: #000;
         }
 
-        button {
-            background: #000;
-            color: white;
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
             border: none;
-            padding: 12px 30px;
-            border-radius: 4px;
+            background: transparent;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            margin-right: 10px;
         }
 
         button:hover {
@@ -112,12 +118,17 @@
             margin-top: 30px;
         }
 
-        .workouts-section h2 {
+        .category-section {
+            margin-bottom: 25px;
+        }
+
+        .category-section h3 {
             color: #000;
-            margin-bottom: 20px;
-            font-size: 1.3em;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-left: 4px solid #000;
         }
 
         .workout-item {
@@ -125,7 +136,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 15px 20px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -146,9 +157,9 @@
             margin-bottom: 5px;
         }
 
-        .workout-duration {
+        .workout-meta {
             color: #666;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
 
         .workout-badge {
@@ -162,8 +173,9 @@
 
         .empty-state {
             text-align: center;
-            padding: 40px;
+            padding: 20px;
             color: #999;
+            font-style: italic;
         }
 
         .alert {
@@ -210,13 +222,24 @@
             opacity: 0.8;
             font-size: 0.9em;
         }
+
+        .motivation-box {
+            background: #f8f8f8;
+            border: 2px solid #000;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>ACEest Fitness & Gym</h1>
-            <p>Track your fitness journey</p>
+            <h1>🏋️ ACEest Fitness & Gym</h1>
+            <p>Track your fitness journey with categorized sessions</p>
         </div>
 
         <div class="content">
@@ -225,7 +248,7 @@
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-value" id="totalWorkouts">0</div>
-                    <div class="stat-label">Total Workouts</div>
+                    <div class="stat-label">Total Sessions</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="totalMinutes">0</div>
@@ -234,24 +257,33 @@
             </div>
 
             <div class="form-section">
-                <h2>Add New Workout</h2>
+                <h2>Add New Session</h2>
                 <form id="workoutForm">
                     <div class="form-group">
-                        <label for="workout">Workout Type</label>
-                        <input type="text" id="workout" placeholder="e.g., Running, Swimming, Yoga" required>
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="Warm-up">Warm-up</option>
+                            <option value="Workout" selected>Workout</option>
+                            <option value="Cool-down">Cool-down</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="workout">Exercise</label>
+                        <input type="text" id="workout" placeholder="e.g., Running, Push-ups, Stretching" required>
                     </div>
                     <div class="form-group">
                         <label for="duration">Duration (minutes)</label>
                         <input type="number" id="duration" placeholder="e.g., 30" min="1" required>
                     </div>
-                    <button type="submit">Add Workout</button>
+                    <button type="submit">Add Session</button>
                 </form>
             </div>
 
             <div class="workouts-section">
-                <h2>Your Workouts</h2>
                 <div id="workoutsList"></div>
             </div>
+
+            <div id="motivationBox" class="motivation-box" style="display: none;"></div>
         </div>
     </div>
 
@@ -270,33 +302,58 @@
 
         async function loadWorkouts() {
             try {
-                const response = await fetch(`${API_BASE}/workouts`);
-                const data = await response.json();
+                const [workoutsRes, summaryRes] = await Promise.all([
+                    fetch(`${API_BASE}/workouts`),
+                    fetch(`${API_BASE}/summary`)
+                ]);
                 
-                document.getElementById('totalWorkouts').textContent = data.count;
+                const workoutsData = await workoutsRes.json();
+                const summaryData = await summaryRes.json();
                 
-                const totalMinutes = data.workouts.reduce((sum, w) => sum + w.duration, 0);
-                document.getElementById('totalMinutes').textContent = totalMinutes;
+                document.getElementById('totalWorkouts').textContent = workoutsData.count;
+                document.getElementById('totalMinutes').textContent = summaryData.total_time;
                 
                 const workoutsList = document.getElementById('workoutsList');
+                const categories = ['Warm-up', 'Workout', 'Cool-down'];
                 
-                if (data.workouts.length === 0) {
-                    workoutsList.innerHTML = `
-                        <div class="empty-state">
-                            <p>No workouts logged yet. Start by adding your first workout!</p>
-                        </div>
+                let html = '';
+                categories.forEach(category => {
+                    const sessions = workoutsData.by_category[category] || [];
+                    html += `
+                        <div class="category-section">
+                            <h3>${category}</h3>
                     `;
+                    
+                    if (sessions.length === 0) {
+                        html += '<div class="empty-state">No sessions recorded</div>';
+                    } else {
+                        sessions.forEach(session => {
+                            html += `
+                                <div class="workout-item">
+                                    <div class="workout-info">
+                                        <div class="workout-name">${session.exercise}</div>
+                                        <div class="workout-meta">${session.timestamp}</div>
+                                    </div>
+                                    <div class="workout-badge">${session.duration} min</div>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    html += '</div>';
+                });
+                
+                workoutsList.innerHTML = html;
+                
+                // Show motivation
+                const motivationBox = document.getElementById('motivationBox');
+                if (summaryData.total_time > 0) {
+                    motivationBox.textContent = summaryData.motivation;
+                    motivationBox.style.display = 'block';
                 } else {
-                    workoutsList.innerHTML = data.workouts.map((workout, index) => `
-                        <div class="workout-item">
-                            <div class="workout-info">
-                                <div class="workout-name">${workout.workout}</div>
-                                <div class="workout-duration">Workout #${index + 1}</div>
-                            </div>
-                            <div class="workout-badge">${workout.duration} min</div>
-                        </div>
-                    `).join('');
+                    motivationBox.style.display = 'none';
                 }
+                
             } catch (error) {
                 showAlert('Failed to load workouts. Make sure the API is running.', 'error');
             }
@@ -305,6 +362,7 @@
         document.getElementById('workoutForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const category = document.getElementById('category').value;
             const workout = document.getElementById('workout').value.trim();
             const duration = parseInt(document.getElementById('duration').value);
             
@@ -314,17 +372,18 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ workout, duration })
+                    body: JSON.stringify({ category, workout, duration })
                 });
                 
                 const data = await response.json();
                 
                 if (response.ok) {
-                    showAlert(`Workout "${workout}" added successfully!`, 'success');
+                    showAlert(`Session "${workout}" added to ${category}!`, 'success');
                     document.getElementById('workoutForm').reset();
+                    document.getElementById('category').value = 'Workout';
                     loadWorkouts();
                 } else {
-                    showAlert(data.error || 'Failed to add workout', 'error');
+                    showAlert(data.error || 'Failed to add session', 'error');
                 }
             } catch (error) {
                 showAlert('Failed to connect to API. Make sure it\'s running on port 8000.', 'error');
