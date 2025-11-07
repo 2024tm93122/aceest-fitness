@@ -17,19 +17,18 @@ A comprehensive Flask API that models workout logging, diet planning, and progre
 │   └── CI.yml            # GitHub Actions pipeline
 ├── ACEest_Fitness.py     # Original Tkinter app (V1.0)
 ├── ACEest_Fitness-V1.1.py # Enhanced version with categories
-├── ACEest_Fitness-V1.2.py # Tabbed interface (3 tabs)
-├── ACEest_Fitness-V1.2.1.py # Advanced version with progress tracker
-├── ACEest_Fitness-V1.2.2.py # Improved UI and styling
-├── ACEest_Fitness-V1.2.3.py # Modern design with color palette
-├── ACEest_Fitness-V1.3.py # Complete version with PDF reports & BMI/BMR
+├── ACEest_Fitness-V1.2.py # Tabbed interface with 3 tabs (Workout Chart, Diet Chart)
+├── ACEest_Fitness-V1.2.1.py # Advanced version with 4 tabs (adds Progress Tracker)
+├── ACEest_Fitness-V1.2.2.py # Improved UI styling and enhanced user experience
+├── ACEest_Fitness-V1.2.3.py # Professional color palette and modern design
+├── ACEest_Fitness-V1.3.py # Complete version with PDF reports, BMI/BMR tracking
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
 ```
 
-## Features
+## Features (V1.2.1+)
 
-### **Current API (V1.2.1+)**
 - ✅ **Workout Logging** - Track exercises with categories (Warm-up, Workout, Cool-down)
 - ✅ **Workout Chart** - Personalized exercise recommendations
 - ✅ **Diet Chart** - Goal-based diet plans (Weight Loss, Muscle Gain, Endurance)
@@ -102,7 +101,7 @@ docker build -t aceest-fitness:v1.2.1 .
 docker run -p 8000:8000 aceest-fitness:v1.2.1
 ```
 
-## 3) Git & GitHub (Version Control)
+## 3) Git & GitHub (Suggested Workflow)
 ```bash
 git init
 git add .
@@ -118,7 +117,7 @@ Pushes to GitHub will trigger the **CI workflow**:
 
 - Install deps and run **pytest**
 - Build Docker image and run a **smoke test** (health check + sample API calls)
-- Test all endpoints (workout-chart, diet-chart, progress)
+- Test all new endpoints (workout-chart, diet-chart, progress)
 
 ## 4) Web UI
 
@@ -136,130 +135,53 @@ The UI provides:
 
 ## Version History
 
-| Version | Date | Features | Key Additions |
-|---------|------|----------|---------------|
-| **V1.0** | Initial | Basic workout logging (Tkinter) | Simple GUI with add/view workouts |
-| **V1.1** | Update 1 | Added categories, timestamps, motivation | Workout categories (Warm-up, Workout, Cool-down) |
-| **V1.2** | Update 2 | Tabbed interface (3 tabs) | Workout Chart, Diet Chart tabs |
-| **V1.2.1** | Update 3 | Progress Tracker with charts | 4th tab with matplotlib visualizations |
-| **V1.2.2** | Update 4 | Enhanced UI styling | Modern theme, better UX |
-| **V1.2.3** | Update 5 | Professional color palette | Clean design, improved aesthetics |
-| **V1.3** | Latest | PDF reports, BMI/BMR tracking | User info, calorie tracking, PDF export |
+| Version | Features | Description |
+|---------|----------|-------------|
+| **V1.0** | Basic workout logging (Tkinter) | Simple desktop GUI with add/view workouts functionality |
+| **V1.1** | Added categories, timestamps, motivation | Workout categories (Warm-up, Workout, Cool-down) with time tracking |
+| **V1.2** | Tabbed interface with 3 tabs | Added Workout Chart and Diet Chart tabs (no progress tracker) |
+| **V1.2.1** | Added 4th tab: Progress Tracker | Complete tabbed UI with visual charts using matplotlib |
+| **V1.2.2** | Enhanced UI styling | Improved theme, better UX, modern styling |
+| **V1.2.3** | Professional color palette | Clean design with consistent color scheme |
+| **V1.3** | PDF reports & health metrics | User info, BMI/BMR calculation, calorie tracking, PDF export |
 
-## Technology Stack
+## Version Details
 
-### **Backend**
-- **Flask 3.0.3** - Web framework
-- **Gunicorn 22.0.0** - WSGI HTTP Server
-- **Python 3.11** - Programming language
+### **V1.2 - Tabbed Interface Introduction**
+- **Added Features:**
+  - Tabbed notebook interface using ttk.Notebook
+  - Workout Chart tab with exercise recommendations
+  - Diet Chart tab with goal-based meal plans
+  - Three main tabs: Log Workouts, Workout Chart, Diet Chart
+- **Key Differences from V1.1:**
+  - Moved from single window to multi-tab interface
+  - Added static workout and diet recommendations
+  - Improved organization and user navigation
+- **Note:** V1.2 does NOT include the Progress Tracker tab (that's V1.2.1+)
 
-### **Testing**
-- **Pytest 8.3.2** - Testing framework
-- **Requests 2.32.3** - HTTP library for testing
+### **V1.2.1 - Progress Visualization**
+- **Added Features:**
+  - 4th tab: Progress Tracker with matplotlib charts
+  - Bar chart showing time spent per category
+  - Pie chart showing workout distribution
+  - Dynamic chart updates after adding workouts
+- **Dependencies:** Requires matplotlib for chart rendering
 
-### **Visualization**
-- **Matplotlib 3.9.0** - Charts and graphs (V1.2.1+)
+## Notes
 
-### **DevOps**
-- **Docker** - Containerization
-- **GitHub Actions** - CI/CD pipeline
-- **Git** - Version control
-
-## Project Structure Details
-
-### **Flask Application (`app/app.py`)**
-- Factory pattern with `create_app()`
-- In-memory storage with categorized workouts
-- RESTful API endpoints
-- Template rendering for web UI
-
-### **Tests (`tests/`)**
-- Unit tests for all API endpoints
-- Validation error testing
-- Category-based workout testing
-- Health check and summary endpoint tests
-
-### **Docker Configuration**
-- Based on Python 3.11 slim image
-- Includes curl for health checks
-- Runs with Gunicorn for production
-- Exposes port 8000
-
-### **CI/CD Pipeline**
-- Automated testing on every push
-- Docker build and smoke testing
-- Multi-step workflow validation
-- Endpoint health verification
+- The original provided Tkinter script was translated into HTTP endpoints so the app can be tested and containerized easily.
+- The in-memory workout store resets on each restart; persistence is out of scope for this assignment but can be added later.
+- Added conftest.py to resolve the module not found error which was failing the GitHub Work Action.
+- V1.2 introduces tabbed interface with workout and diet recommendations (3 tabs).
+- V1.2.1 extends V1.2 by adding visual progress tracking (4 tabs with matplotlib charts).
+- All Tkinter versions are preserved to demonstrate incremental feature development.
 
 ## Assignment Context
 
 This project is part of the **Introduction to DevOps (CSIZG514/SEZG514)** course assignment, demonstrating:
-
-### **Assignment 1 Requirements**
-- ✅ Flask web application development
-- ✅ Version control with Git/GitHub
-- ✅ Unit testing with Pytest
-- ✅ Containerization with Docker
-- ✅ CI/CD pipeline with GitHub Actions
-
-### **Assignment 2 Requirements** (Planned)
-- ⏳ Jenkins CI/CD pipeline setup
-- ⏳ SonarQube code quality analysis
-- ⏳ Docker Hub registry integration
-- ⏳ Kubernetes deployment (Minikube/Cloud)
-- ⏳ Advanced deployment strategies:
-  - Blue-Green Deployment
-  - Canary Release
-  - Rolling Update
-  - Shadow Deployment
-  - A/B Testing
-
-## Development Roadmap
-
-### **Phase 1: Core Application** ✅ Complete
-- Basic Flask API
-- Unit tests
-- Docker containerization
-- GitHub Actions CI
-
-### **Phase 2: Enhanced Features** ✅ Complete
-- Workout categories
-- Diet planning
-- Progress tracking
-- Web UI with tabs
-
-### **Phase 3: Advanced DevOps** 🚧 In Progress
-- Jenkins integration
-- SonarQube quality gates
-- Kubernetes deployment
-- Advanced deployment strategies
-
-### **Phase 4: Production Ready** 📋 Planned
-- Database persistence
-- User authentication
-- Cloud deployment (AWS/Azure/GCP)
-- Monitoring and logging
-
-## Notes
-
-- The original Tkinter scripts demonstrate the evolution from desktop to web application
-- The in-memory workout store resets on each restart; persistence will be added in future versions
-- All Tkinter versions are preserved to show incremental development
-- The Flask API provides the same functionality as Tkinter apps but is containerizable and testable
-- Current implementation supports all Assignment 1 requirements
-- Assignment 2 requirements are planned for the next phase
-
-## Contributing
-
-This is an academic project for the DevOps course. For any questions or suggestions:
-- Check the GitHub Issues
-- Review the assignment documentation
-- Contact the course instructors
-
-## License
-
-This project is created for educational purposes as part of the BITS Pilani DevOps course.
-
----
-
-**Last Updated:** Version 1.2.1 - Enhanced with workout charts, diet plans, and progress tracking
+- CI/CD pipeline implementation
+- Containerization with Docker
+- Automated testing with Pytest
+- RESTful API design
+- Version control with Git/GitHub
+- Progressive feature development across multiple versions
