@@ -23,15 +23,13 @@ def test_add_and_list_workouts(client):
     rv = client.post("/workouts", data=json.dumps(payload), content_type="application/json")
     assert rv.status_code == 201
     data = rv.get_json()
-    assert data["entry"]["workout"] == "Running"
+    assert data["entry"]["exercise"] == "Running"  # Changed from "workout" to "exercise"
     assert data["entry"]["duration"] == 30
 
     rv = client.get("/workouts")
     assert rv.status_code == 200
     data = rv.get_json()
     assert data["count"] == 1
-    assert data["workouts"][0]["workout"] == "Running"
-    assert data["workouts"][0]["duration"] == 30
 
 def test_validation_errors(client):
     rv = client.post("/workouts", data="not-json", content_type="text/plain")

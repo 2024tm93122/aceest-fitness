@@ -41,6 +41,26 @@ python -m app.app
 curl http://localhost:8000/health
 curl -X POST http://localhost:8000/workouts -H "Content-Type: application/json" -d '{"workout":"Running","duration":30}'
 curl http://localhost:8000/workouts
+
+# Add a workout
+curl -X POST http://localhost:8000/workouts \
+  -H "Content-Type: application/json" \
+  -d '{"category":"Workout","workout":"Running","duration":30}'
+
+# Get all workouts
+curl http://localhost:8000/workouts
+
+# Get summary
+curl http://localhost:8000/summary
+
+# Get workout recommendations
+curl http://localhost:8000/workout-chart
+
+# Get diet plans
+curl http://localhost:8000/diet-chart
+
+# Get progress data
+curl http://localhost:8000/progress
 ```
 
 **Run unit tests:**
