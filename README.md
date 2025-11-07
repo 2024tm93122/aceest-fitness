@@ -1,4 +1,4 @@
-# ACEest Fitness & Gym — Introduction To DevOps Assignment 1 Solution
+# ACEest Fitness & Gym — Introduction To DevOps Assignment
 
 # A minimal Flask API that models basic workout logging for **ACEest_Fitness and Gym**, packaged with unit tests, Dockerfile, and a GitHub Actions CI pipeline.
 
@@ -36,15 +36,12 @@ python -m app.app
 ```
 
 **Try it:**
-
-**Try it:**
 ```bash
 curl http://localhost:8000/health
 curl -X POST http://localhost:8000/workouts -H "Content-Type: application/json" -d '{"category":"Workout","workout":"Running","duration":30}'
 curl http://localhost:8000/workouts
 curl http://localhost:8000/summary
 ```
-
 **Run unit tests:**
 
 ```bash
