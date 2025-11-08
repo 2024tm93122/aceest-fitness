@@ -1,4 +1,4 @@
-# ACEest Fitness & Gym — Introduction To DevOps Assignment
+# ACEest Fitness & Gym — V1.2
 
 # A minimal Flask API that models basic workout logging for **ACEest_Fitness and Gym**, packaged with unit tests, Dockerfile, and a GitHub Actions CI pipeline.
 
