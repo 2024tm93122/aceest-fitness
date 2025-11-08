@@ -22,7 +22,6 @@ def create_app(test_config: dict | None = None):
             return jsonify(error="Expected application/json"), 415
 
         data = request.get_json(silent=True) or {}
-        category = data.get("category", "Workout")
         category = data.get("category", "Workout")  # Default to "Workout"
         workout = (data.get("workout") or "").strip()
         duration = data.get("duration")

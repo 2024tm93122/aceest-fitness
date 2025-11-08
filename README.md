@@ -1,4 +1,4 @@
-# ACEest Fitness & Gym — V1.2.1
+# ACEest Fitness & Gym — V1.3
 
 A comprehensive Flask API that models workout logging, diet planning, and progress tracking for **ACEest Fitness and Gym**, packaged with unit tests, Dockerfile, and a GitHub Actions CI pipeline.
 
@@ -26,6 +26,60 @@ A comprehensive Flask API that models workout logging, diet planning, and progre
 ├── requirements.txt
 └── README.md
 ```
+### **V1.3 - Complete Health Tracking (Final Tkinter Version)**
+- **Major Additions:**
+  - User information section (Name, Regn-ID, Age, Gender, Height, Weight)
+  - BMI (Body Mass Index) calculation
+  - BMR (Basal Metabolic Rate) calculation
+  - Calorie tracking using MET values
+  - PDF report generation with ReportLab
+  - Weekly workout summaries
+  - Daily workout tracking
+- **Health Metrics:**
+  - Automatic BMI calculation from height/weight
+  - Gender-specific BMR formulas (Mifflin-St Jeor equation)
+  - Exercise-specific calorie burn estimates using MET values
+- **PDF Features:**
+  - Comprehensive weekly fitness reports
+  - User health information summary
+  - Detailed workout logs with calories
+  - Professional table formatting
+- **Dependencies:**
+  - Requires `reportlab==4.0.7` for PDF generation
+  - All previous dependencies (matplotlib, tkinter)
+- **Usage:**
+```bash
+  # Install dependencies including reportlab
+  pip install -r requirements.txt
+  
+  # Run the Tkinter app
+  python ACEest_Fitness-V1.3.py
+```
+- **Important Note:** V1.3 is a standalone desktop application and does NOT integrate with the Flask API. It represents the complete evolution of the Tkinter GUI versions (V1.0 → V1.3).
+## Features (V1.2.1+)
+
+- ✅ **Workout Logging** - Track exercises with categories (Warm-up, Workout, Cool-down)
+- ✅ **Workout Chart** - Personalized exercise recommendations
+- ✅ **Diet Chart** - Goal-based diet plans (Weight Loss, Muscle Gain, Endurance)
+- ✅ **Progress Tracker** - Visual progress with charts and statistics
+- ✅ **RESTful API** - Complete API endpoints for all features
+- ✅ **Web UI** - Modern tabbed interface with real-time updates
+- ✅ **Automated Testing** - Comprehensive pytest coverage
+- ✅ **CI/CD Pipeline** - GitHub Actions with Docker builds
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | API documentation |
+| `/health` | GET | Health check |
+| `/workouts` | POST | Add new workout session |
+| `/workouts` | GET | List all workouts |
+| `/summary` | GET | Get workout summary with motivation |
+| `/workout-chart` | GET | Get workout recommendations |
+| `/diet-chart` | GET | Get diet plans by goal |
+| `/progress` | GET | Get progress statistics |
+| `/ui` | GET | Web interface |
 
 ## Features (V1.2.1+)
 
