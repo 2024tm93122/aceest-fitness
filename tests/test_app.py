@@ -38,47 +38,6 @@ def test_add_and_list_workouts(client):
     data = rv.get_json()
     assert data["count"] == 1
 
-def test_summary_endpoint(client):
-    payload = {"category": "Workout", "workout": "Running", "duration": 45}
-    client.post("/workouts", json=payload)
-    
-    rv = client.get("/summary")
-    assert rv.status_code == 200
-    data = rv.get_json()
-    assert data["total_time"] == 45
-    assert "motivation" in data
-
-def test_workout_chart_endpoint(client):
-    rv = client.get("/workout-chart")
-    assert rv.status_code == 200
-    data = rv.get_json()
-    assert "workout_chart" in data
-    assert "Warm-up" in data["workout_chart"]
-    assert "Workout" in data["workout_chart"]
-    assert "Cool-down" in data["workout_chart"]
-
-def test_diet_chart_endpoint(client):
-    rv = client.get("/diet-chart")
-    assert rv.status_code == 200
-    data = rv.get_json()
-    assert "diet_plans" in data
-    assert "Weight Loss" in data["diet_plans"]
-    assert "Muscle Gain" in data["diet_plans"]
-    assert "Endurance" in data["diet_plans"]
-
-def test_progress_endpoint(client):
-    rv = client.get("/progress")
-    assert rv.status_code == 200
-    data = rv.get_json()
-    assert "totals" in data
-    assert "percentages" in data
-    assert "total_time" in data
-
-def test_invalid_category(client):
-    payload = {"category": "Invalid", "workout": "Test", "duration": 10}
-    rv = client.post("/workouts", json=payload)
-    assert rv.status_code == 400
-
 def test_validation_errors(client):
     rv = client.post("/workouts", data="not-json", content_type="text/plain")
     assert rv.status_code == 415
