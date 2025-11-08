@@ -13,6 +13,14 @@ def test_health_ok(client):
     assert rv.status_code == 200
     assert rv.get_json()["status"] == "ok"
 
+def test_add_workout_with_category(client):
+    payload = {"category": "Warm-up", "workout": "Stretching", "duration": 10}
+    rv = client.post("/workouts", data=json.dumps(payload), content_type="application/json")
+    assert rv.status_code == 201
+    data = rv.get_json()
+    assert data["entry"]["exercise"] == "Stretching"
+    assert data["category"] == "Warm-up"
+
 def test_add_and_list_workouts(client):
     rv = client.get("/workouts")
     assert rv.status_code == 200

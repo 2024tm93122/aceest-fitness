@@ -56,8 +56,11 @@ A comprehensive Flask API that models workout logging, diet planning, and progre
 
 **Prereqs:** Python 3.11+
 ```bash
+# Create virtual environment
 python -m venv .venv
 source .venv/bin/activate    # Windows: .venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
 
 # Start the app on http://localhost:8000
@@ -112,19 +115,41 @@ git remote add origin https://github.com/2024tm93122/aceest-fitness.git
 git push -u origin main
 git push origin v1.2.1
 ```
+app/
+├── __init__.py          # Package initialization
+├── app.py               # Flask application with routes
+└── templates/
+    └── index.html       # Web UI template
 
-Pushes to GitHub will trigger the **CI workflow**:
+tests/
+├── conftest.py          # Test configuration
+└── test_app.py          # Unit tests
+
+.github/workflows/
+└── CI.yml              # CI/CD pipeline configuration
+```
 
 - Install deps and run **pytest**
 - Build Docker image and run a **smoke test** (health check + sample API calls)
 - Test all new endpoints (workout-chart, diet-chart, progress)
 
-## 4) Web UI
+# Run tests with coverage
+pytest --cov=app tests/
 
-After starting the app, visit the web interface:
+# Run specific test file
+pytest tests/test_app.py -v
+```
+
+### **Docker Development**
 ```bash
-# Open in browser
-http://localhost:8000/ui
+# Build image
+docker build -t aceest-fitness:dev .
+
+# Run with volume mounting for development
+docker run -p 8000:8000 -v $(pwd):/app aceest-fitness:dev
+
+# View logs
+docker logs <container_id>
 ```
 
 The UI provides:
