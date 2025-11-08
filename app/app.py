@@ -1,12 +1,13 @@
-
 from flask import Flask, request, jsonify, render_template
+from datetime import datetime
 
 def create_app(test_config: dict | None = None):
     app = Flask(__name__)
     if test_config:
         app.config.update(test_config)
 
-    app.workouts = []
+    # ✅ FIXED: Use dictionary with categories
+    app.workouts = {"Warm-up": [], "Workout": [], "Cool-down": []}
 
     @app.get("/")
     def index():
@@ -26,6 +27,10 @@ def create_app(test_config: dict | None = None):
         workout = (data.get("workout") or "").strip()
         duration = data.get("duration")
 
+        # ✅ FIXED: Validate category
+        if category not in app.workouts:
+            return jsonify(error="Invalid category. Must be: Warm-up, Workout, or Cool-down"), 400
+
         if not workout:
             return jsonify(error="Field 'workout' is required"), 400
 
@@ -36,12 +41,18 @@ def create_app(test_config: dict | None = None):
         except Exception:
             return jsonify(error="Field 'duration' must be a positive integer (minutes)"), 400
 
-        entry = {"workout": workout, "duration": duration}
-        app.workouts.append(entry)
-        return jsonify(message="Workout added", entry=entry), 201
+        # ✅ FIXED: Use "exercise" field and add timestamp
+        entry = {
+            "exercise": workout,
+            "duration": duration,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        app.workouts[category].append(entry)
+        return jsonify(message="Workout added", entry=entry, category=category), 201
 
     @app.get("/workouts")
     def list_workouts():
+        # ✅ FIXED: Properly iterate dictionary
         all_workouts = []
         for category, sessions in app.workouts.items():
             for session in sessions:
@@ -50,6 +61,7 @@ def create_app(test_config: dict | None = None):
 
     @app.get("/summary")
     def get_summary():
+        # ✅ FIXED: Calculate from dictionary structure
         total_time = sum(
             session['duration'] 
             for sessions in app.workouts.values() 
