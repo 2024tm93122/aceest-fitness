@@ -10,10 +10,7 @@ def create_app(test_config: dict | None = None):
 
     @app.get("/")
     def index():
-        return jsonify(
-            message="ACEestFitness API is running", 
-            docs=["/health", "/workouts", "/summary", "/workout-chart", "/diet-chart", "/progress"]
-        ), 200
+        return jsonify(message="ACEestFitness API is running", docs=["/health", "/workouts", "/summary"]), 200
 
     @app.get("/health")
     def health():
@@ -26,6 +23,7 @@ def create_app(test_config: dict | None = None):
 
         data = request.get_json(silent=True) or {}
         category = data.get("category", "Workout")
+        category = data.get("category", "Workout")  # Default to "Workout"
         workout = (data.get("workout") or "").strip()
         duration = data.get("duration")
 
@@ -77,46 +75,6 @@ def create_app(test_config: dict | None = None):
             by_category=app.workouts,
             total_time=total_time,
             motivation=motivation
-        ), 200
-
-    @app.get("/workout-chart")
-    def workout_chart():
-        """Personalized workout chart recommendations"""
-        chart_data = {
-            "Warm-up (5-10 min)": ["5 min light cardio (Jog/Cycle) to raise heart rate.", "Jumping Jacks (30 reps) for dynamic mobility.", "Arm Circles (15 Fwd/Bwd) to prepare shoulders."],
-            "Strength & Cardio (45-60 min)": ["Push-ups (3 sets of 10-15) - Upper body strength.", "Squats (3 sets of 15-20) - Lower body foundation.", "Plank (3 sets of 60 seconds) - Core stabilization.", "Lunges (3 sets of 10/leg) - Balance and leg development."],
-            "Cool-down (5 min)": ["Slow Walking - Bring heart rate down gradually.", "Static Stretching (Hold 30s each) - Focus on major muscle groups.", "Deep Breathing Exercises - Aid recovery and relaxation."]
-        }
-        return jsonify(workout_chart=chart_data), 200
-
-    @app.get("/diet-chart")
-    def diet_chart():
-        """Best diet chart for fitness goals"""
-        diet_plans = {
-            "Weight Loss Focus (Calorie Deficit)": ["Breakfast: Oatmeal with Berries (High Fiber).", "Lunch: Grilled Chicken/Tofu Salad (Lean Protein).", "Dinner: Vegetable Soup with Lentils (Low Calorie, High Volume)."],
-            "Muscle Gain Focus (High Protein)": ["Breakfast: 3 Egg Omelet, Spinach, Whole-wheat Toast (Protein/Carb combo).", "Lunch: Chicken Breast, Quinoa, and Steamed Veggies (Balanced Meal).", "Post-Workout: Protein Shake & Greek Yogurt (Immediate Recovery)."],
-            "Endurance Focus (Complex Carbs)": ["Pre-Workout: Banana & Peanut Butter (Quick Energy).", "Lunch: Whole Grain Pasta with Light Sauce (Sustainable Carbs).", "Dinner: Salmon & Avocado Salad (Omega-3s and Healthy Fats)."]
-        }
-        return jsonify(diet_plans=diet_plans), 200
-
-    @app.get("/progress")
-    def progress():
-        """Get progress data for visualization"""
-        totals = {
-            cat: sum(entry['duration'] for entry in sessions) 
-            for cat, sessions in app.workouts.items()
-        }
-        
-        total = sum(totals.values())
-        percentages = {
-            cat: round((val / total * 100), 1) if total > 0 else 0 
-            for cat, val in totals.items()
-        }
-        
-        return jsonify(
-            totals=totals,
-            percentages=percentages,
-            total_time=total
         ), 200
         
     @app.get("/ui")
