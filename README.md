@@ -21,6 +21,12 @@
 ├── requirements.txt
 └── README.md
 ```
+## Features (V1.2.1)
+
+- ✅ **Workout Logging** - Track exercises with categories (Warm-up, Workout, Cool-down)
+- ✅ **Workout Chart** - Personalized exercise recommendations
+- ✅ **Diet Chart** - Goal-based diet plans (Weight Loss, Muscle Gain, Endurance)
+- ✅ **Web UI** - Modern tabbed interface with real-time updates
 
 ## 1) Run Locally (No Docker)
 
