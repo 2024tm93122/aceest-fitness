@@ -81,6 +81,31 @@ A comprehensive Flask API that models workout logging, diet planning, and progre
 | `/progress` | GET | Get progress statistics |
 | `/ui` | GET | Web interface |
 
+## Features (V1.2.1+)
+
+- ✅ **Workout Logging** - Track exercises with categories (Warm-up, Workout, Cool-down)
+- ✅ **Workout Chart** - Personalized exercise recommendations
+- ✅ **Diet Chart** - Goal-based diet plans (Weight Loss, Muscle Gain, Endurance)
+- ✅ **Progress Tracker** - Visual progress with charts and statistics
+- ✅ **RESTful API** - Complete API endpoints for all features
+- ✅ **Web UI** - Modern tabbed interface with real-time updates
+- ✅ **Automated Testing** - Comprehensive pytest coverage
+- ✅ **CI/CD Pipeline** - GitHub Actions with Docker builds
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | API documentation |
+| `/health` | GET | Health check |
+| `/workouts` | POST | Add new workout session |
+| `/workouts` | GET | List all workouts |
+| `/summary` | GET | Get workout summary with motivation |
+| `/workout-chart` | GET | Get workout recommendations |
+| `/diet-chart` | GET | Get diet plans by goal |
+| `/progress` | GET | Get progress statistics |
+| `/ui` | GET | Web interface |
+
 ## 1) Run Locally (No Docker)
 
 **Prereqs:** Python 3.11+
@@ -197,9 +222,7 @@ The UI provides:
 | **V1.2.1** | Added 4th tab: Progress Tracker | Complete tabbed UI with visual charts using matplotlib |
 | **V1.2.2** | Enhanced UI styling & UX | Improved theme, custom button styles, better visual design |
 | **V1.2.3** | Professional color palette | Modern design with consistent color scheme and Inter font |
-| **V1.3** | PDF reports & health metrics ⭐ **FINAL TKINTER VERSION** | User info, BMI/BMR calculation, calorie tracking, PDF export |
-
-**Note:** V1.3 represents the complete Tkinter desktop application with all features. The Flask API (`app/app.py`) remains separate and production-ready for web deployment.
+| **V1.3** | PDF reports & health metrics | User info, BMI/BMR calculation, calorie tracking, PDF export |
 
 ## Version Details
 
