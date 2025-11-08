@@ -84,6 +84,14 @@ The UI provides:
 - Form to add new workouts
 - List of all logged workouts
 
+- ## Version History
+
+| Version | Features |
+|---------|----------|
+| **V1.0** | Basic workout logging (Tkinter) |
+| **V1.1** | Added categories, timestamps, motivation |
+| **V1.2** | Added tabbed UI (3 tabs: Log, Workout Chart, Diet Chart) |
+
 ## Notes
 
 - The original provided Tkinter script was translated into HTTP endpoints so the app can be tested and containerized easily.
