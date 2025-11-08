@@ -21,7 +21,7 @@
 ├── requirements.txt
 └── README.md
 ```
-## Features (V1.2.1)
+## Features (V1.2)
 
 - ✅ **Workout Logging** - Track exercises with categories (Warm-up, Workout, Cool-down)
 - ✅ **Workout Chart** - Personalized exercise recommendations
