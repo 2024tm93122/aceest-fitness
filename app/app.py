@@ -6,7 +6,6 @@ def create_app(test_config: dict | None = None):
     if test_config:
         app.config.update(test_config)
 
-    # Updated: Initialize with categories
     app.workouts = {"Warm-up": [], "Workout": [], "Cool-down": []}
 
     @app.get("/")
@@ -15,7 +14,6 @@ def create_app(test_config: dict | None = None):
             message="ACEestFitness API is running", 
             docs=["/health", "/workouts", "/summary", "/workout-chart", "/diet-chart", "/progress"]
         ), 200
-        return jsonify(message="ACEestFitness API is running", docs=["/health", "/workouts", "/summary"]), 200
 
     @app.get("/health")
     def health():
@@ -28,7 +26,6 @@ def create_app(test_config: dict | None = None):
 
         data = request.get_json(silent=True) or {}
         category = data.get("category", "Workout")
-        category = data.get("category", "Workout")  # Default to "Workout"
         workout = (data.get("workout") or "").strip()
         duration = data.get("duration")
 
