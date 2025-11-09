@@ -1,0 +1,148 @@
+# A/B Testing Deployment using Istio VirtualService
+# Version A (50% of traffic)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-fitness-version-a
+  labels:
+    app: aceest-fitness
+    version: v1.2.3
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aceest-fitness
+      version: v1.2.3
+  template:
+    metadata:
+      labels:
+        app: aceest-fitness
+        version: v1.2.3
+    spec:
+      containers:
+      - name: aceest-fitness
+        image: docker.io/aceest-fitness:v1.2.3
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+---
+# Version B (50% of traffic)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-fitness-version-b
+  labels:
+    app: aceest-fitness
+    version: v1.3.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aceest-fitness
+      version: v1.3.0
+  template:
+    metadata:
+      labels:
+        app: aceest-fitness
+        version: v1.3.0
+    spec:
+      containers:
+      - name: aceest-fitness
+        image: docker.io/aceest-fitness:v1.3.0
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+---
+# Service for both versions
+apiVersion: v1
+kind: Service
+metadata:
+  name: aceest-fitness-service
+  labels:
+    app: aceest-fitness
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: aceest-fitness
+---
+# Istio VirtualService for A/B Testing (requires Istio)
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: aceest-fitness-ab
+spec:
+  hosts:
+  - aceest-fitness-service
+  http:
+  - match:
+    - headers:
+        user-type:
+          exact: beta-tester
+    route:
+    - destination:
+        host: aceest-fitness-service
+        subset: version-b
+  - route:
+    - destination:
+        host: aceest-fitness-service
+        subset: version-a
+      weight: 50
+    - destination:
+        host: aceest-fitness-service
+        subset: version-b
+      weight: 50
+---
+# Destination Rule for version subsets
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: aceest-fitness-destination
+spec:
+  host: aceest-fitness-service
+  subsets:
+  - name: version-a
+    labels:
+      version: v1.2.3
+  - name: version-b
+    labels:
+      version: v1.3.0

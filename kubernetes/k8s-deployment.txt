@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-fitness-deployment
+  labels:
+    app: aceest-fitness
+    version: v1.3.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aceest-fitness
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: aceest-fitness
+        version: v1.3.0
+    spec:
+      containers:
+      - name: aceest-fitness
+        image: docker.io/aceest-fitness:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        env:
+        - name: FLASK_ENV
+          value: "production"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aceest-fitness-service
+  labels:
+    app: aceest-fitness
+spec:
+  type: LoadBalancer
+  selector:
+    app: aceest-fitness
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  sessionAffinity: ClientIP
