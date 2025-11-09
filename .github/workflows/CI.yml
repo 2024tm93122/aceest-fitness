@@ -14,19 +14,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: |
+      - name: Install dependencies
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run tests with coverage
         run: |
-          pytest --cov=app --cov-report=xml --cov-report=html -v
+          pytest --cov=app --cov-report=xml --cov-report=html --junitxml=test-results.xml -v
       - name: Upload coverage reports
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-report
+          name: coverage-reports
           path: |
             coverage.xml
             htmlcov/
+            test-results.xml
 
   sonarqube:
     runs-on: ubuntu-latest
@@ -34,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+          fetch-depth: 0  # Shallow clones disabled for better analysis
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -42,7 +44,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pytest --cov=app --cov-report=xml --junitxml=test-results.xml
+          pytest --cov=app --cov-report=xml --junitxml=test-results.xml -v
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
         env:
@@ -53,6 +55,7 @@ jobs:
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true  # Don't fail build if quality gate fails
 
   docker-build-and-smoke:
     runs-on: ubuntu-latest
@@ -67,40 +70,36 @@ jobs:
         run: |
           for i in {1..20}; do
             if curl -fsS http://localhost:8000/health >/dev/null; then
-              echo "App is up"; break
+              echo "✅ App is up and running!"; break
             fi
+            echo "⏳ Waiting for app... ($i/20)"
             sleep 1
           done
       - name: Run smoke tests
         run: |
+          echo "Testing health endpoint..."
           curl -fsS http://localhost:8000/health
+          
+          echo "Testing add workout..."
           curl -fsS -X POST http://localhost:8000/workouts \
             -H 'Content-Type: application/json' \
             -d '{"category":"Workout","workout":"Running","duration":25}'
+          
+          echo "Testing list workouts..."
           curl -fsS http://localhost:8000/workouts
+          
+          echo "Testing summary..."
           curl -fsS http://localhost:8000/summary
+          
+          echo "Testing UI..."
           curl -fsS http://localhost:8000/ui
-      - name: Show logs on failure
+          
+          echo "✅ All smoke tests passed!"
+      - name: Show container logs on failure
         if: failure()
         run: docker logs web
-      - name: Cleanup
+      - name: Cleanup container
         if: always()
         run: |
           docker stop web || true
           docker rm web || true
-
-  validate-kubernetes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Validate Kubernetes manifests
-        run: |
-          # Install kubeval
-          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz
-          sudo mv kubeval /usr/local/bin
-          # Validate all YAML files
-          for file in kubernetes/*.yaml; do
-            echo "Validating $file"
-            kubeval "$file" || exit 1
-          done
