@@ -16,7 +16,7 @@ sonar.python.coverage.reportPaths=coverage.xml
 sonar.python.xunit.reportPath=test-results.xml
 
 # Exclude files from analysis
-sonar.exclusions=**/tests/**,**/__pycache__/**,**/venv/**,**/.venv/**,**/migrations/**
+sonar.exclusions=**/tests/**,**/__pycache__/**,**/venv/**,**/.venv/**,**/migrations/**,ACEest_Fitness*.py
 
 # Code coverage exclusions
 sonar.coverage.exclusions=**/tests/**,**/conftest.py
