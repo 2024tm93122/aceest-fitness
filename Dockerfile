@@ -30,8 +30,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Install system dependencies for Python packages
-# curl: for health checks
-# gcc, python3-dev: for compiling Python packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
@@ -81,11 +79,15 @@ COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code
-COPY --chown=appuser:appuser . .
+COPY --chown=appuser:appuser app/ ./app/
+COPY --chown=appuser:appuser tests/ ./tests/
+COPY --chown=appuser:appuser requirements.txt .
+COPY --chown=appuser:appuser entrypoint.sh .
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /app/logs /app/instance && \
-    chown -R appuser:appuser /app
+    chown -R appuser:appuser /app && \
+    chmod +x /app/entrypoint.sh
 
 # Switch to non-root user
 USER appuser
@@ -96,35 +98,6 @@ EXPOSE 8000
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
-
-# Set up entrypoint script
-COPY --chown=appuser:appuser <<'EOF' /app/entrypoint.sh
-#!/bin/bash
-set -e
-
-echo "Starting ACEest Fitness API..."
-echo "Environment: ${FLASK_ENV}"
-echo "Workers: ${GUNICORN_WORKERS}"
-echo "Threads: ${GUNICORN_THREADS}"
-
-# Start Gunicorn
-exec gunicorn \
-    --bind 0.0.0.0:${PORT} \
-    --workers ${GUNICORN_WORKERS} \
-    --threads ${GUNICORN_THREADS} \
-    --timeout ${GUNICORN_TIMEOUT} \
-    --keepalive ${GUNICORN_KEEPALIVE} \
-    --max-requests ${GUNICORN_MAX_REQUESTS} \
-    --max-requests-jitter ${GUNICORN_MAX_REQUESTS_JITTER} \
-    --access-logfile - \
-    --error-logfile - \
-    --log-level info \
-    --capture-output \
-    --enable-stdio-inheritance \
-    "app.app:create_app()"
-EOF
-
-RUN chmod +x /app/entrypoint.sh
 
 # Use entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]
