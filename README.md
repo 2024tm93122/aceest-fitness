@@ -354,33 +354,6 @@ Each version builds upon the previous, showcasing:
 - V1.3 adds comprehensive health tracking and reporting capabilities.
 - All Tkinter versions are preserved to demonstrate incremental feature development.
 
-## Assignment Context
-
-This project is part of the **Introduction to DevOps (CSIZG514/SEZG514)** course assignment, demonstrating:
-
-### **Assignment 1 & 2 Requirements**
-- ✅ Flask web application development
-- ✅ Version control with Git/GitHub
-- ✅ Unit testing with Pytest
-- ✅ Containerization with Docker
-- ✅ CI/CD pipeline with GitHub Actions
-- ✅ Progressive feature development
-- ✅ RESTful API design
-- ✅ Automated testing and quality assurance
-
-### **Future Enhancements (Assignment 2 Phase 2)**
-- ⏳ Jenkins CI/CD pipeline setup
-- ⏳ SonarQube code quality analysis
-- ⏳ Docker Hub registry integration
-- ⏳ Kubernetes deployment (Minikube/Cloud)
-- ⏳ Advanced deployment strategies:
-  - Blue-Green Deployment
-  - Canary Release
-  - Rolling Update
-  - Shadow Deployment
-  - A/B Testing
-
-## Contributing
 
 This is an academic project for the DevOps course. For any questions or suggestions:
 - Check the GitHub Issues
