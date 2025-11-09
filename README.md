@@ -22,6 +22,7 @@ A comprehensive Flask API that models workout logging, diet planning, and progre
 ├── ACEest_Fitness-V1.2.2.py # Enhanced UI styling and UX improvements
 ├── ACEest_Fitness-V1.2.3.py # Professional color palette and modern design
 ├── ACEest_Fitness-V1.3.py # Complete version with PDF reports, BMI/BMR
+├──sonar-properties
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
