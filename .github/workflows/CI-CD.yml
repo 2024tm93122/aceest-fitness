@@ -420,7 +420,7 @@ jobs:
     steps:
       - name: Create deployment summary
         run: |
-          echo "## 🚀 Deployment Success" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Deployment Success" >> $GITHUB_STEP_SUMMARY 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Image:** \`${{ env.DOCKER_IMAGE }}:latest\`" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
