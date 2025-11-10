@@ -155,14 +155,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Build Docker image
         run: |
           docker build \
@@ -172,31 +164,30 @@ jobs:
             --build-arg VCS_REF=${{ github.sha }} \
             .
 
-      - name: Start container
+      - name: Start container for testing
         run: |
           docker run -d \
             --name aceest-fitness-test \
             -p 8000:8000 \
-            --health-cmd="curl -f http://localhost:8000/health || exit 1" \
-            --health-interval=10s \
-            --health-timeout=5s \
-            --health-retries=5 \
             ${{ env.DOCKER_IMAGE }}:ci-${{ github.sha }}
+          
+          echo "Waiting for container to be ready..."
+          sleep 10
 
-      - name: Wait for container to be healthy
+      - name: Wait for application to be ready
         run: |
-          echo "Waiting for container to be healthy..."
+          echo "Testing if application is responding..."
           for i in {1..30}; do
-            if docker inspect --format='{{.State.Health.Status}}' aceest-fitness-test | grep -q "healthy"; then
-              echo "Container is healthy!"
+            if curl -f -s http://localhost:8000/health > /dev/null 2>&1; then
+              echo "✅ Application is ready!"
               break
             fi
             if [ $i -eq 30 ]; then
-              echo "Container failed to become healthy"
+              echo "❌ Application failed to start"
               docker logs aceest-fitness-test
               exit 1
             fi
-            echo "Attempt $i/30: Container not healthy yet, waiting..."
+            echo "⏳ Attempt $i/30: Waiting for application..."
             sleep 2
           done
 
@@ -205,35 +196,35 @@ jobs:
           echo "=== Running Smoke Tests ==="
           
           # Test 1: Health check
-          echo "Test 1: Health check endpoint"
+          echo "✓ Test 1: Health check endpoint"
           curl -f -s http://localhost:8000/health || exit 1
           
           # Test 2: Root endpoint
-          echo "Test 2: Root endpoint"
+          echo "✓ Test 2: Root endpoint"
           curl -f -s http://localhost:8000/ || exit 1
           
           # Test 3: Add workout
-          echo "Test 3: Add workout"
+          echo "✓ Test 3: Add workout"
           curl -f -s -X POST http://localhost:8000/workouts \
             -H 'Content-Type: application/json' \
             -d '{"category":"Workout","workout":"Running","duration":25}' || exit 1
           
           # Test 4: List workouts
-          echo "Test 4: List workouts"
+          echo "✓ Test 4: List workouts"
           WORKOUTS=$(curl -f -s http://localhost:8000/workouts)
           echo "$WORKOUTS" | grep -q "Running" || exit 1
           
           # Test 5: Get summary
-          echo "Test 5: Get summary"
+          echo "✓ Test 5: Get summary"
           SUMMARY=$(curl -f -s http://localhost:8000/summary)
           echo "$SUMMARY" | grep -q "total_time" || exit 1
           
           # Test 6: UI endpoint
-          echo "Test 6: UI endpoint"
+          echo "✓ Test 6: UI endpoint"
           curl -f -s http://localhost:8000/ui | grep -q "ACEest" || exit 1
           
-          # Test 7: Multiple workouts
-          echo "Test 7: Add multiple workouts"
+          # Test 7: Add multiple workouts
+          echo "✓ Test 7: Add multiple workouts"
           curl -f -s -X POST http://localhost:8000/workouts \
             -H 'Content-Type: application/json' \
             -d '{"category":"Warm-up","workout":"Stretching","duration":10}' || exit 1
@@ -242,14 +233,14 @@ jobs:
             -d '{"category":"Cool-down","workout":"Walking","duration":15}' || exit 1
           
           # Test 8: Verify count
-          echo "Test 8: Verify workout count"
+          echo "✓ Test 8: Verify workout count"
           COUNT=$(curl -f -s http://localhost:8000/workouts | grep -o '"count":[0-9]*' | cut -d':' -f2)
           if [ "$COUNT" -ne 3 ]; then
-            echo "Expected 3 workouts, got $COUNT"
+            echo "❌ Expected 3 workouts, got $COUNT"
             exit 1
           fi
           
-          echo "=== All smoke tests passed! ==="
+          echo "✅ All smoke tests passed!"
 
       - name: Check container logs
         if: always()
@@ -302,35 +293,37 @@ jobs:
           # Extended integration tests
           echo "Running extended integration tests..."
           
-          # Test error handling
-          echo "Testing error handling..."
+          # Test error handling - missing duration
+          echo "✓ Testing error handling (missing duration)..."
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8000/workouts \
             -H 'Content-Type: application/json' \
             -d '{"workout":"Test"}')
           if [ "$STATUS" -ne 400 ]; then
-            echo "Expected 400 for missing duration, got $STATUS"
+            echo "❌ Expected 400 for missing duration, got $STATUS"
             exit 1
           fi
           
           # Test invalid category
+          echo "✓ Testing invalid category..."
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8000/workouts \
             -H 'Content-Type: application/json' \
             -d '{"category":"Invalid","workout":"Test","duration":10}')
           if [ "$STATUS" -ne 400 ]; then
-            echo "Expected 400 for invalid category, got $STATUS"
+            echo "❌ Expected 400 for invalid category, got $STATUS"
             exit 1
           fi
           
           # Test content type validation
+          echo "✓ Testing content type validation..."
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8000/workouts \
             -H 'Content-Type: text/plain' \
             -d 'not json')
           if [ "$STATUS" -ne 415 ]; then
-            echo "Expected 415 for invalid content type, got $STATUS"
+            echo "❌ Expected 415 for invalid content type, got $STATUS"
             exit 1
           fi
           
-          echo "All integration tests passed!"
+          echo "✅ All integration tests passed!"
           docker stop test-app
 
   # ==================== Docker Hub Push ====================
